@@ -42,8 +42,8 @@ deploy:
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'master'
       when: manual
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'dev'
-  environment:
-    name: review/$CI_COMMIT_REF_SLUG
+  # environment:
+  #   name: review/$CI_COMMIT_REF_SLUG
   script:
     - case "$CI_COMMIT_BRANCH" in (master) TAG="stable"        ;; (dev) TAG="latest"          ;; (*) exit 1 ;; esac
     - case "$CI_COMMIT_BRANCH" in (master) NAMESPACE="prd"     ;; (dev) NAMESPACE="dev"       ;; (*) exit 1 ;; esac
