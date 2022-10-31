@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   # repository: nginx
   # repository: docker.io/emivespa/test-app-backend
-  repository: registry.gitlab.com/desafiofinal-group/test-app-frontend
+  repository: registry.gitlab.com/tpfinalcraftech/test-app-backend
     # pullPolicy: IfNotPresent
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
