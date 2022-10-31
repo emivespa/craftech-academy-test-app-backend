@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-app-backend-migrations
+  annotations:
+    "helm.sh/hook": pre-upgrade,post-install
+spec:
+  template:
+    spec:
+      containers:
+      - name: test-app-backend-migrations
+        image: docker.io/emivespa/test-app-backend:latest
+          # TODO: use .Values
+        imagePullPolicy: Always # TODO: change?
+        command: ['python', 'manage.py', 'migrate']
+        env:
+            - name: "SECRET_KEY"
+              valueFrom:
+                secretKeyRef:
+                  key:  SECRET_KEY
+                  name: test-app-backend-env
+            - name: "DEBUG"
+              valueFrom:
+                secretKeyRef:
+                  key:  SECRET_KEY
+                  name: test-app-backend-env
+            - name: "ALLOWED_HOSTS"
+              valueFrom:
+                secretKeyRef:
+                  key:  ALLOWED_HOSTS
+                  name: test-app-backend-env
+            - name: "SQL_ENGINE"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_ENGINE
+                  name: test-app-backend-env
+            - name: "SQL_DATABASE"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_DATABASE
+                  name: test-app-backend-env
+            - name: "SQL_USER"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_USER
+                  name: test-app-backend-env
+            - name: "SQL_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_PASSWORD
+                  name: test-app-backend-env
+            - name: "SQL_HOST"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_HOST
+                  name: test-app-backend-env
+            - name: "SQL_PORT"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_PORT
+                  name: test-app-backend-env
+            - name: "RUNSERVER_PORT"
+              valueFrom:
+                secretKeyRef:
+                  key:  RUNSERVER_PORT
+                  name: test-app-backend-env
+      restartPolicy: OnFailure
+  backoffLimit: 4
+  completions: 1

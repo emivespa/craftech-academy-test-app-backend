@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              # containerPort: 80
+              containerPort: 8000
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # #
+          # TODO:://www.reddit.com/r/kubernetes/comments/ut9z4j/liveness_and_readiness_probe_for_postgres_in/
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          #
+          command: ['python', 'manage.py', 'runserver',  '0.0.0.0:8000']
+            # TODO: not hardcode port.
+          env:
+            - name: "SECRET_KEY"
+              valueFrom:
+                secretKeyRef:
+                  key:  SECRET_KEY
+                  name: test-app-backend-env
+            - name: "DEBUG"
+              valueFrom:
+                secretKeyRef:
+                  key:  SECRET_KEY
+                  name: test-app-backend-env
+            - name: "ALLOWED_HOSTS"
+              valueFrom:
+                secretKeyRef:
+                  key:  ALLOWED_HOSTS
+                  name: test-app-backend-env
+            - name: "SQL_ENGINE"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_ENGINE
+                  name: test-app-backend-env
+            - name: "SQL_DATABASE"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_DATABASE
+                  name: test-app-backend-env
+            - name: "SQL_USER"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_USER
+                  name: test-app-backend-env
+            - name: "SQL_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_PASSWORD
+                  name: test-app-backend-env
+            - name: "SQL_HOST"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_HOST
+                  name: test-app-backend-env
+            - name: "SQL_PORT"
+              valueFrom:
+                secretKeyRef:
+                  key:  SQL_PORT
+                  name: test-app-backend-env
+            - name: "RUNSERVER_PORT"
+              valueFrom:
+                secretKeyRef:
+                  key:  RUNSERVER_PORT
+                  name: test-app-backend-env
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

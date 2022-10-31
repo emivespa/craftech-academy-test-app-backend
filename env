@@ -1,0 +1,16 @@
+SECRET_KEY=django-insecure-97s)x3c8w8h_qv3t3s7%)#k@dpk2edr0ed_(rq9y(rbb&_!ai%
+
+DEBUG=1
+	# TODO: >SECURITY WARNING: don't run with debug turned on in production!
+ALLOWED_HOSTS=['*']
+	# TODO: unsafe?
+
+SQL_ENGINE=django.db.backends.postgresql
+SQL_DATABASE=postgres
+SQL_USER=admin
+SQL_PASSWORD=12345678
+# SQL_HOST=127.0.0.1
+SQL_HOST=test-app-db
+SQL_PORT=5432
+
+RUNSERVER_PORT=8000

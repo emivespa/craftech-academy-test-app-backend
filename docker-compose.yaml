@@ -1,0 +1,35 @@
+version: '3.8'
+
+networks:
+  test-app-network:
+    driver: bridge
+
+services:
+  test-app-backend:
+    container_name: test-app-backend
+    # image: test-app-backend:latest
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: emivespa/test-app-backend:latest
+    depends_on:
+      - test-app-db
+    env_file:
+      - ./env
+    environment:
+      ENTRYPOINT_FLUSH_AND_MIGRATE: 1
+      # If not 1, entrypoint acts as if the db already exists.
+    networks:
+      - test-app-network
+    ports:
+      - "8000:8000" # == RUNSERVER_PORT @ env_file == API_SERVER @ $front/src/config/contstant.js
+  test-app-db:
+    container_name: test-app-db
+    image: postgres:alpine
+    env_file:
+      - ./env.postgres
+    expose:
+      - 5432
+    networks:
+      - test-app-network
+
