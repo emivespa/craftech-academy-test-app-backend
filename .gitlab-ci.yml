@@ -7,8 +7,8 @@ stages:
 test:
   stage: test
   image: python:3.8.3-alpine
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  # rules:
+  #   - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   # Replication is ok here I think.
   script:
     - apk update
