@@ -55,7 +55,7 @@ notify:
   stage: notify
   image: curlimages/curl:7.86.0 
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'master'
+    - if: $CI_PIPELINE_SOURCE == 'push'
   script:
     - |
       curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, backend!"}' https://hooks.slack.com/services/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
