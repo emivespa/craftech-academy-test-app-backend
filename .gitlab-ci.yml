@@ -4,29 +4,29 @@ stages:
   - deploy
   - notify
 
-dotenv:
-  stage: .pre
-  environment:
-    name: $CI_COMMIT_REF_SLUG
-  artifacts:
-    reports:
-      dotenv: .env
-  script:
-    - case "$CI_COMMIT_BRANCH" in
-        ('master')
-          NAMESPACE=prd
-          TAG=stable
-          ;;
-        ('dev')
-          NAMESPACE=dev
-          TAG=latest
-          ;;
-      esac
-    - touch .env
-    - echo "DOTENV_NAMESPACE=${NAMESPACE}"  >> .env
-    - echo "DOTENV_TAG=${TAG}"              >> .env
-  # Keep in mind there's no CI_COMMIT_BRANCH on tag builds! DOTENV_NAMESPACE AND
-  # DOTENV_TAG will be empty.
+#dotenv:
+#  stage: .pre
+#  environment:
+#    name: $CI_COMMIT_REF_SLUG
+#  artifacts:
+#    reports:
+#      dotenv: .env
+#  script:
+#    - case "$CI_COMMIT_BRANCH" in
+#        ('master')
+#          NAMESPACE=prd
+#          TAG=stable
+#          ;;
+#        ('dev')
+#          NAMESPACE=dev
+#          TAG=latest
+#          ;;
+#      esac
+#    - touch .env
+#    - echo "DOTENV_NAMESPACE=${NAMESPACE}"  >> .env
+#    - echo "DOTENV_TAG=${TAG}"              >> .env
+#  # Keep in mind there's no CI_COMMIT_BRANCH on tag builds! DOTENV_NAMESPACE AND
+#  # DOTENV_TAG will be empty.
 
 test:
   stage: test
@@ -72,13 +72,13 @@ deploy:
     name: $CI_COMMIT_REF_SLUG
   rules:
     # Checking for branch is important, otherwise this would run for tag builds
-    # where DOTENV_NAMESPACE and DOTENV_TAG are empty.
+    # where ENVIRONMENT_NAMESPACE and ENVIRONMENT_TAG are empty.
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'master' 
       when: manual
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'dev'
   image: alpine/helm:3.9.4
   script:
-    - helm upgrade --install -n $DOTENV_NAMESPACE test-app-backend chart --set image.tag=$DOTENV_TAG
+    - helm upgrade --install -n $ENVIRONMENT_NAMESPACE test-app-backend chart --set image.tag=$ENVIRONMENT_TAG
 
 notify:
   stage: notify
