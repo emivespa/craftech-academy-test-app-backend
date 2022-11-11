@@ -6,6 +6,8 @@ stages:
 
 dotenv:
   stage: .pre
+  environment:
+    name: $CI_COMMIT_REF_SLUG
   artifacts:
     reports:
       dotenv: .env
@@ -18,7 +20,6 @@ dotenv:
         ('dev')
           NAMESPACE=dev
           TAG=latest
-          ;;
       esac
     - touch .env
     - echo "DOTENV_NAMESPACE=${NAMESPACE}"  >> .env
@@ -27,7 +28,7 @@ dotenv:
 test:
   stage: test
   environment:
-    name: $CI_COMMIT_BRANCH
+    name: $CI_COMMIT_REF_SLUG
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
   image: python:3.8.3-alpine
@@ -43,7 +44,7 @@ test:
 build:
   stage: build
   environment:
-    name: $CI_COMMIT_BRANCH
+    name: $CI_COMMIT_REF_SLUG
   rules:
     - if: $CI_PIPELINE_SOURCE == 'push'
   image:
@@ -65,9 +66,10 @@ build:
 deploy:
   stage: deploy
   environment:
-    name: $CI_COMMIT_BRANCH
+    name: $CI_COMMIT_REF_SLUG
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'master'
+    # Checking for branch is important, otherwise this would run for tags.
+    - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'master' 
       when: manual
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'dev'
   image: alpine/helm:3.9.4
@@ -78,7 +80,7 @@ deploy:
 notify:
   stage: notify
   environment:
-    name: $CI_COMMIT_BRANCH
+    name: $CI_COMMIT_REF_SLUG
   rules:
     - if: $CI_PIPELINE_SOURCE == 'push'
   image: curlimages/curl:7.86.0 
