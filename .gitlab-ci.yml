@@ -20,6 +20,7 @@ dotenv:
         ('dev')
           NAMESPACE=dev
           TAG=latest
+          ;;
       esac
     - touch .env
     - echo "DOTENV_NAMESPACE=${NAMESPACE}"  >> .env
