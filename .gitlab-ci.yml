@@ -10,15 +10,17 @@ dotenv:
     reports:
       dotenv: .env
   script:
-    - set -x
     - case "$CI_COMMIT_BRANCH" in
         ('master')
           NAMESPACE=prd
           TAG=stable
           ;;
-        (*)
+        ('dev')
           NAMESPACE=dev
           TAG=latest
+          ;;
+        (*)
+          exit 1
           ;;
       esac
     - touch .env
@@ -34,7 +36,6 @@ test:
   image: python:3.8.3-alpine
   # Replication is ok here I think.
   script:
-    - set -x
     - apk update
     - apk add --update --no-cache postgresql-dev gcc libc-dev linux-headers postgresql-dev musl-dev zlib-dev
     - apk add --update --no-cache postgresql-dev python3-dev libpq
@@ -74,7 +75,6 @@ deploy:
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'dev'
   image: alpine/helm:3.9.4
   script:
-    - set -x
     - helm upgrade --install -n $DOTENV_NAMESPACE test-app-backend chart --set image.tag=$DOTENV_TAG
 
 
@@ -86,6 +86,5 @@ notify:
     - if: $CI_PIPELINE_SOURCE == 'push'
   image: curlimages/curl:7.86.0 
   script:
-    - set -x
     - |
       curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, backend!"}' https://hooks.slack.com/services/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
