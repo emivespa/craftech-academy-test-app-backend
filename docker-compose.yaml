@@ -25,7 +25,7 @@ services:
       - "8000:8000" # == RUNSERVER_PORT @ env_file == API_SERVER @ $front/src/config/contstant.js
   test-app-db:
     container_name: test-app-db
-    image: postgres:alpine
+    image: postgres:15.1-alpine3.16
     env_file:
       - ./env.postgres
     expose:
