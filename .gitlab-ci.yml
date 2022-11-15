@@ -76,7 +76,7 @@ deploy:
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'master' 
       when: manual
     - if: $CI_PIPELINE_SOURCE == 'push' && $CI_COMMIT_BRANCH == 'dev'
-  image: alpine/helm:3.9.4
+  image: alpine/helm:3.10.1
   script:
     - set -x
     - test -z "$ENVIRONMENT_NAMESPACE" && exit 1
