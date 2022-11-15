@@ -4,30 +4,6 @@ stages:
   - deploy
   - notify
 
-#dotenv:
-#  stage: .pre
-#  environment:
-#    name: $CI_COMMIT_REF_SLUG
-#  artifacts:
-#    reports:
-#      dotenv: .env
-#  script:
-#    - case "$CI_COMMIT_BRANCH" in
-#        ('master')
-#          NAMESPACE=prd
-#          TAG=stable
-#          ;;
-#        ('dev')
-#          NAMESPACE=dev
-#          TAG=latest
-#          ;;
-#      esac
-#    - touch .env
-#    - echo "DOTENV_NAMESPACE=${NAMESPACE}"  >> .env
-#    - echo "DOTENV_TAG=${TAG}"              >> .env
-#  # Keep in mind there's no CI_COMMIT_BRANCH on tag builds! DOTENV_NAMESPACE AND
-#  # DOTENV_TAG will be empty.
-
 test:
   stage: test
   environment:
