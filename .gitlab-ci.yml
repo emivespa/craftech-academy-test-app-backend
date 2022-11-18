@@ -39,7 +39,8 @@ build:
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}"
-      --destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG:-latest}"
+      ${CI_COMMIT_TAG+--destination "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"}
+      ${ENVIRONMENT_TAG_OVERRIDE+--destination "${CI_REGISTRY_IMAGE}:${ENVIRONMENT_TAG_OVERRIDE}"}
 
 deploy:
   stage: deploy
@@ -55,7 +56,11 @@ deploy:
   script:
     - set -x
     - test -z "$ENVIRONMENT_NAMESPACE" && exit 1
-    - helm upgrade --install -n $ENVIRONMENT_NAMESPACE test-app-backend chart --set image.tag=$ENVIRONMENT_TAG
+    - >
+      helm upgrade --install
+      -n $ENVIRONMENT_NAMESPACE
+      test-app-backend chart
+      ${ENVIRONMENT_TAG_OVERRIDE+--set image.tag=$ENVIRONMENT_TAG_OVERRIDE}
 
 notify:
   stage: notify
