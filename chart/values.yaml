@@ -8,8 +8,7 @@ image:
   # repository: nginx
   # repository: docker.io/emivespa/test-app-backend
   repository: registry.gitlab.com/tpfinalcraftech/test-app-backend
-    # pullPolicy: IfNotPresent
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   # tag: ""
 
