@@ -35,4 +35,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD [ "sh", "-x", "./entrypoint.sh" ]
+CMD [ "python", "manage.py", "runserver 0.0.0.0:$RUNSERVER_PORT"]
