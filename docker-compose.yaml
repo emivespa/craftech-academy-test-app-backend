@@ -16,13 +16,13 @@ services:
       - test-app-db
     env_file:
       - ./env
-    environment:
-      ENTRYPOINT_FLUSH_AND_MIGRATE: 1
-      # If not 1, entrypoint acts as if the db already exists.
     networks:
       - test-app-network
     ports:
       - "8000:8000" # == RUNSERVER_PORT @ env_file == API_SERVER @ $front/src/config/contstant.js
+    command: python manage.py flush --no-input
+    command: python manage.py migrate
+    command: python manage.py runserver 0.0.0.0:"$RUNSERVER_PORT"
   test-app-db:
     container_name: test-app-db
     image: postgres:15.1-alpine3.16
