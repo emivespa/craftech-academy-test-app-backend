@@ -2,13 +2,11 @@
 
 if [ "$SQL_DATABASE" = "postgres" ]
 then
-    echo "Waiting for postgres..."
-
-    while ! nc -z $SQL_HOST $SQL_PORT; do
-      sleep 0.1
-    done
-
-    echo "PostgreSQL started"
+	echo "Waiting for postgres..."
+	while ! nc -z $SQL_HOST $SQL_PORT; do
+		sleep 0.1
+	done
+	echo "PostgreSQL started"
 fi
 
 # Uncomment below to flush db e.g. after running tests
@@ -22,7 +20,5 @@ if test "$ENTRYPOINT_FLUSH_AND_MIGRATE" = '1'; then
 	python manage.py migrate
 fi
 python manage.py runserver 0.0.0.0:"$RUNSERVER_PORT"
-
-
 
 exec "$@"
