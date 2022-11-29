@@ -3,9 +3,17 @@
 if [ "$SQL_DATABASE" = "postgres" ]
 then
 	echo "Waiting for postgres..."
-	while ! nc -z $SQL_HOST $SQL_PORT; do
-		sleep 0.1
+	started=0
+	for time in 5 10 20 40; do
+		sleep "$time"
+		if nc -z "$SQL_HOST" "$SQL_PORT"; then
+			started=1
+			break
+		fi
 	done
+	if "$started" != '1'; then
+		exit 1
+	fi
 	echo "PostgreSQL started"
 fi
 
