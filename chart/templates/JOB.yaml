@@ -9,10 +9,7 @@ spec:
     spec:
       containers:
       - name: test-app-backend-migrations
-        # image: docker.io/emivespa/test-app-backend:latest
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          # TODO: use .Values
-          # imagePullPolicy: Always # TODO: change?
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ['python', 'manage.py', 'migrate']
         env:
